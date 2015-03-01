@@ -1,0 +1,29 @@
+{
+  "name": "thread-evaluator",
+  "version": "1.0.0",
+  "description": "Evaluates a set of operations given a data source and returns detailed information and truthiness",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "should": "^5.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "mocha tests/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/threadstudios/thread-evaluator"
+  },
+  "keywords": [
+    "Evaluator"
+  ],
+  "author": "Paul Westerdale - Thread Studios",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/threadstudios/thread-evaluator/issues"
+  },
+  "homepage": "https://github.com/threadstudios/thread-evaluator"
+}
