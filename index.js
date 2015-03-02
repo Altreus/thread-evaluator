@@ -8,40 +8,41 @@ var lang = {
    'and' : 'And',
    'or' : 'Or',
    'in' : 'In'
-}
+};
+
+var operators = {
+   eq : function(l, r){
+      return l == r;
+   },
+   'gt' : function(l, r){
+      return l > r;
+   },
+   'lt' : function(l, r){
+      return l < r;
+   },
+   'gte' : function(l, r){
+      return l >= r;
+   },
+   'lte' : function(l, r){
+      return l <= r;
+   },
+   'and' : function(l, r){
+      return l && r;
+   },
+   'or' : function(l, r){
+      return l || r;
+   },
+   'in' : function(l, r){
+      return r.indexOf(l) !== -1;
+   }
+};
 
 var Evaluate = function(instructions, data){
    this.data = data;
    this.instructions = instructions;
    this.checks = {failed : [], succeeded : []};
-   this.operators = {
-      eq : function(l, r){
-         return l == r;
-      },
-      'gt' : function(l, r){
-         return l > r;
-      },
-      'lt' : function(l, r){
-         return l < r;
-      },
-      'gte' : function(l, r){
-         return l >= r;
-      },
-      'lte' : function(l, r){
-         return l <= r;
-      },
-      'and' : function(l, r){
-         return l && r;
-      },
-      'or' : function(l, r){
-         return l || r;
-      },
-      'in' : function(l, r){
-         return r.indexOf(l) !== -1;
-      }
-   }
 
-   this.state = this.operators[this.instructions.func](this.evaluate(this.instructions.left), this.evaluate(this.instructions.right));
+   this.state = operators[this.instructions.func](this.evaluate(this.instructions.left), this.evaluate(this.instructions.right));
    this.checks[this.state ? 'succeeded' : 'failed'].push(this.getLog(this.instructions, this.state));
 
    return {
@@ -52,7 +53,7 @@ var Evaluate = function(instructions, data){
 
 Evaluate.prototype.evaluate = function(instruction){
    if (instruction.func) { 
-      var res = this.operators[instruction.func](this.evaluate(instruction.left), this.evaluate(instruction.right));
+      var res = operators[instruction.func](this.evaluate(instruction.left), this.evaluate(instruction.right));
       this.checks[res ? 'succeeded' : 'failed'].push(this.getLog(instruction, res));
       return res;
    } else { 
