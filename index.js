@@ -7,7 +7,8 @@ var lang = {
    'lte' : 'Less than or equal to',
    'and' : 'And',
    'or' : 'Or',
-   'in' : 'In'
+   'in' : 'In',
+   'modulo' : 'Modulo'
 };
 
 var operators = {
@@ -34,6 +35,21 @@ var operators = {
    },
    'in' : function(l, r){
       return r.indexOf(l) !== -1;
+   },
+   'modulo' : function(l, r){
+      return l % r;
+   },
+   'add' : function(l, r){
+      return l + r;
+   },
+   'subtract' : function(l, r){
+      return l - r;
+   },
+   'multiply' : function(l, r){
+      return l * r;
+   },
+   'divide' : function(l , r){
+      return l / r;
    }
 };
 
@@ -59,6 +75,8 @@ Evaluate.prototype.evaluate = function(instruction){
    } else { 
       if(instruction.model){
          return this.getValue(instruction.model); 
+      } else if(instruction.operation) {
+         return operators[instruction.operation.func](this.evaluate(instruction.operation.left),this.evaluate(instruction.operation.right));
       } else {
          return instruction.value;
       }
@@ -75,12 +93,26 @@ Evaluate.prototype.getValue = function(model){
    return data;
 }
 
+Evaluate.prototype.getLogData = function(side, res){
+
+   if(side.model){
+      return side.model + ': (' + this.getValue(side.model) + ')';
+   } else if (side.operation){
+      return 'Sum : (' + this.evaluate(side.operation.left) + ' ' + side.operation.func + ' ' + this.evaluate(side.operation.right) + ')';
+    } else {
+      return 'Value: (' + side.value + ')';
+   }
+
+   var sideData = side.model ? this.getValue(side.model) : side.value;
+   sideData = !sideData ? res : sideData;
+
+}
+
 Evaluate.prototype.getLog = function(instruction, res){
    var message = {left : "", right : ""};
    for(var x in message){
-      var sideData = instruction[x].model ? this.getValue(instruction[x].model) : instruction[x].value;
-      sideData = !sideData ? res : sideData;
-      message[x] = instruction[x].model ? instruction[x].model + ': (' + sideData + ')' : 'Value: (' + sideData + ')';
+      sideData = this.getLogData(instruction[x], res);
+      message[x] = sideData;
    }
    return message.left + ' ' + lang[instruction.func] + ' ' + message.right;
 }

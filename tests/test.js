@@ -196,6 +196,33 @@ describe('Evaluator', function(){
       })
    });
 
+   describe('Provide Sum for evaluation', function(){
+      it("should evaluate an instruction with a sum component", function(done){
+
+         var data = {
+           quantity : 6,
+         };
+
+         var instruction = {
+            left : { 
+              operation : {
+                left : { model : 'quantity' },
+                func : 'modulo',
+                right : { value : 2 }
+              }
+            },
+            func : 'eq',
+            right : { value : 0 }
+         };
+
+         var test = new Evaluate(instruction, data);
+         test.state.should.equal(true);
+
+         done();
+
+      })
+   });
+
    describe('.checks', function(){
       it("should return a detailed account of the checks performed and their results", function(done){
 
