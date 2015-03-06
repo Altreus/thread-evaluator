@@ -53,6 +53,15 @@ var operators = {
    }
 };
 
+function getValue (model, data){
+   model = model.split('.');
+   while(model.length){
+      var seg = model.shift();
+      data = data[seg];
+   }
+   return data;
+}
+
 var Evaluate = function(instructions, data){
    this.data = data;
    this.checks = {failed : [], succeeded : []};
@@ -73,7 +82,7 @@ Evaluate.prototype.evaluate = function(instruction){
       return res;
    } else { 
       if(instruction.model){
-         return this.getValue(instruction.model); 
+         return getValue(instruction.model, this.data); 
       } else if(instruction.operation) {
          return operators[instruction.operation.func](this.evaluate(instruction.operation.left),this.evaluate(instruction.operation.right));
       } else {
@@ -82,27 +91,17 @@ Evaluate.prototype.evaluate = function(instruction){
    }
 }
 
-Evaluate.prototype.getValue = function(model){
-   var data = this.data;
-   model = model.split('.');
-   while(model.length){
-      var seg = model.shift();
-      data = data[seg];
-   }
-   return data;
-}
-
 Evaluate.prototype.getLogData = function(side, res){
 
    if(side.model){
-      return side.model + ': (' + this.getValue(side.model) + ')';
+      return side.model + ': (' + getValue(side.model, this.data) + ')';
    } else if (side.operation){
       return 'Sum : (' + this.evaluate(side.operation.left) + ' ' + side.operation.func + ' ' + this.evaluate(side.operation.right) + ')';
     } else {
       return 'Value: (' + side.value + ')';
    }
 
-   var sideData = side.model ? this.getValue(side.model) : side.value;
+   var sideData = side.model ? getValue(side.model, this.data) : side.value;
    sideData = !sideData ? res : sideData;
 
 }
