@@ -55,14 +55,13 @@ var operators = {
 
 var Evaluate = function(instructions, data){
    this.data = data;
-   this.instructions = instructions;
    this.checks = {failed : [], succeeded : []};
 
-   this.state = operators[this.instructions.func](this.evaluate(this.instructions.left), this.evaluate(this.instructions.right));
-   this.checks[this.state ? 'succeeded' : 'failed'].push(this.getLog(this.instructions, this.state));
+   var state = operators[instructions.func](this.evaluate(instructions.left), this.evaluate(instructions.right));
+   this.checks[state ? 'succeeded' : 'failed'].push(this.getLog(instructions, state));
 
    return {
-      state : this.state,
+      state : state,
       checks : this.checks
    };
 }
